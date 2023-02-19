@@ -1,6 +1,7 @@
 import {todolistsAPI, TodolistType} from '../../api/todolists-api'
 import {Dispatch} from 'redux'
 import {AppActionType, RequestStatusType, setAppStatusAC, setErrorSnackBarAC} from "../../app/app-reducer";
+import {AxiosError} from "axios";
 
 const initialState: Array<TodolistDomainType> = []
 
@@ -81,6 +82,9 @@ export const addTodolistTC = (title: string) => {
                     dispatch(setErrorSnackBarAC(res.data.messages[0]))
                 }
                 dispatch(setAppStatusAC("failed"))
+            })
+            .catch((err:AxiosError)=>{
+                dispatch(setErrorSnackBarAC(err.message))
             })
     }
 }
