@@ -18,6 +18,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import {useAppSelector} from "./store";
 import {RequestStatusType} from "./app-reducer";
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
+import Draggable from 'react-draggable';
 
 
 function App() {
@@ -39,6 +40,11 @@ function App() {
             {status==="loading" && <CircularProgress disableShrink />}
             {status==="loading"&& <LinearProgress color="secondary" />}
             {status==="loading" && <CircularProgress disableShrink />}
+
+            <Draggable>
+                <div>I can now be moved around!</div>
+            </Draggable>
+
             <Container fixed>
                 <TodolistsList/>
             </Container>
