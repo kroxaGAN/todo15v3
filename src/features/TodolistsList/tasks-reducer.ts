@@ -2,8 +2,9 @@ import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType}
 import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from '../../api/todolists-api'
 import {Dispatch} from 'redux'
 import {AppRootStateType} from '../../app/store'
-import {AppActionType, setAppStatusAC, setErrorSnackBarAC} from "../../app/app-reducer";
+import {AppActionType, setAppStatusAC} from "../../app/app-reducer";
 import {AxiosError} from "axios";
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
 const initialState: TasksStateType = {}
 
@@ -79,13 +80,11 @@ export const addTaskTC = (title: string, todolistId: string) => (dispatch: Dispa
                 dispatch(action)
                 dispatch(setAppStatusAC("succeeded"))
             } else {
-                dispatch(setErrorSnackBarAC(res.data.messages[0]))
-                dispatch(setAppStatusAC("succeeded"))
+                handleServerAppError(res.data,dispatch)
             }
         })
         .catch((err:AxiosError)=>{
-            dispatch(setAppStatusAC("failed"))
-            dispatch(setErrorSnackBarAC(err.message))
+            handleServerNetworkError(dispatch,err)
         })
 }
 export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string) =>
@@ -117,13 +116,11 @@ export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelT
                     dispatch(setAppStatusAC("succeeded"))
                 }
                 else {
-                    if (res.data.messages.length){
-                        dispatch(setErrorSnackBarAC(res.data.messages[0]))
-                    }else {
-                        dispatch(setErrorSnackBarAC("Some wrong"))
-                    }
-                    dispatch(setAppStatusAC("failed"))
+                    handleServerAppError(res.data,dispatch)
                 }
+            })
+            .catch((err:AxiosError)=>{
+                handleServerNetworkError(dispatch,err)
             })
     }
 
